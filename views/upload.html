@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title><%=title%></title>
+    <link rel="stylesheet" href="/static/css/index.css">
+    <script src="/static/js/socket.io.js"></script>
+</head>
+
+<body>
+    <section class="main">
+        <header>上传文件</header>
+        <section>
+<!--             
+            <form action="/socket/upload" method="post" enctype='multipart/form-data'>
+                <input type="file" name="avatar">
+                <input type="submit" value="上传">
+            </form> -->
+            <input type="file" id="fileinput"><button id="upload">上传</button>
+            <ul id="showimg">
+                
+            </ul>
+            <style>
+                ul{
+                    overflow: hidden;
+                }
+                li{
+                    list-style: none;
+                    width: 50%;
+                    float: left;
+                }
+                img{
+                    width: 100%;
+                    height: auto;
+                }
+            </style>
+        </section>
+        <script>
+            window.onload = function() {
+                var btn = document.getElementById('upload')
+                btn.addEventListener('click', function() {
+                    var fileinput = document.getElementById('fileinput').files[0];
+                    var formData = new FormData();
+                    formData.append('avatar', fileinput);
+                    var req = new XMLHttpRequest();
+                    req.open('post', '/socket/upload');
+                    // req.setRequestHeader('Content-Type','multipart/form-data');
+                    req.send(formData);
+                    req.onreadystatechange = function(){
+                        if (req.readyState === 4 && req.status === 200) {
+                            var reqs = JSON.parse(req.responseText)
+                            if (reqs.code = '0000') {
+                                var showimg = document.getElementById('showimg')
+                                showimg.innerHTML = showimg.innerHTML +　'<li><img src="'+reqs.url+'"alt="'+reqs.url+'"/></li>'
+                                window.alert(reqs.msg)
+                            }
+                        
+                        }
+                    }
+                })
+            }
+        </script>
+        <footer>
+            create by lmj
+        </footer>
+    </section>
+</body>
+
+</html>

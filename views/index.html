@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <link rel="stylesheet" href="/static/css/index.css">
+    <script src="/static/js/socket.io.js"></script>
+</head>
+
+<body>
+    <section class="main">
+        <header>测试socket链接</header>
+        <section>
+            <div>
+                <input type="text" id="sendval" value="" placeholder="请你输入要发的东西啦- -" required minlength="3" maxlength="50">
+                <button id="connect" @click="connect()">点击链接</button>
+            </div>
+            <div id="show" class="show"></div>
+        </section>
+        <style>
+        .show img{
+            width: 300px;
+            height: auto;
+        }
+        </style>
+        <footer>
+            create by lmj
+        </footer>
+    </section>
+    <script type="text/javascript">
+        window.onload = function () {
+            var connect = document.getElementById('connect');
+            var sockes = io.connect('ws://' + window.location.hostname  + ':2001');
+            connect.addEventListener('click', function(){
+                var vals = document.getElementById('sendval').value
+                sockes.emit('message', {
+                    type: 0, // type 0 就是
+                    text: vals,
+                    imgurl: ''
+                })   
+            })
+            sockes.on('message', function(obj) {
+                console.log('obj', obj)
+                var shows = document.getElementById('show')
+                if (obj.type === 0) {
+                    shows.innerHTML = shows.innerHTML + '</br><p>'+ obj.text +'</p>'
+                } else if(obj.type === 1) {
+                    shows.innerHTML = shows.innerHTML + '</br><img src="'+ obj.imgurl +'"/>'
+                }
+                // console.log('返回来的信息---', obj, obj.msg)
+            })
+        }
+    </script>
+</body>
+
+</html>
